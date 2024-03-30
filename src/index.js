@@ -12,6 +12,7 @@ async function executeSELECTQuery(query) {
             return row[clause.field] === clause.value;
         }))
         : data;
+        
 
     // Select the specified fields
     return filteredData.map(row => {

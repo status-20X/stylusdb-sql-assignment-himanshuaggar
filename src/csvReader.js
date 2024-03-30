@@ -14,6 +14,7 @@ function readCSV(filePath) {
             })
             .on('error', (error) => {
                 reject(error);
+                
             });
     });
 }
