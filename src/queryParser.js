@@ -2,7 +2,16 @@ function parseQuery(query) {
   // First, let's trim the query to remove any leading/trailing whitespaces
   query = query.trim();
 
-  
+  // Updated regex to capture LIMIT clause and remove it for further processing
+  const limitRegex = /\sLIMIT\s(\d+)/i;
+  const limitMatch = query.match(limitRegex);
+
+  let limit = null;
+  if (limitMatch) {
+      limit = parseInt(limitMatch[1], 10);
+      query = query.replace(limitRegex, ''); // Remove LIMIT clause
+  }
+
   const orderByRegex = /\sORDER BY\s(.+)/i;
   const orderByMatch = query.match(orderByRegex);
 
@@ -94,7 +103,8 @@ if (whereClause && whereClause.includes('GROUP BY')) {
       joinCondition,
       groupByFields,
       hasAggregateWithoutGroupBy,
-      orderByFields
+      orderByFields,
+      limit
   };
 }
 
