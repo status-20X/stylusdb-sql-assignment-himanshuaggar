@@ -17,9 +17,12 @@ test('Parse SQL Query', () => {
         fields: ['id', 'name'],
         table: 'student',
         whereClauses: [],
-        joinCondition: null,
+        joinType: null,
+        groupByFields: null,
+        hasAggregateWithoutGroupBy: false,
         joinTable: null,
-        joinType: null
+        joinCondition: null,
+        orderByFields:null
     });
 });
 
@@ -46,7 +49,10 @@ test('Parse SQL Query with WHERE Clause', () => {
         }],
         joinCondition: null,
         joinTable: null,
-        joinType: null
+        joinType: null,
+        groupByFields: null,
+        hasAggregateWithoutGroupBy: false,
+        orderByFields:null
     });
 });
 
@@ -76,7 +82,10 @@ test('Parse SQL Query with Multiple WHERE Clauses', () => {
         }],
         joinCondition: null,
         joinTable: null,
-        joinType: null
+        joinType: null,
+        groupByFields: null,
+        hasAggregateWithoutGroupBy: false,
+        orderByFields:null
     });
 });
 
@@ -110,7 +119,10 @@ test('Parse SQL Query with INNER JOIN', async () => {
         whereClauses: [],
         joinTable: 'enrollment',
         joinCondition: { left: 'student.id', right: 'enrollment.student_id' },
-        joinType: 'INNER'
+        joinType: 'INNER',
+        groupByFields: null,
+        hasAggregateWithoutGroupBy: false,
+        orderByFields:null
     })
 });
 
@@ -123,7 +135,10 @@ test('Parse SQL Query with INNER JOIN and WHERE Clause', async () => {
         whereClauses: [{ field: 'student.age', operator: '>', value: '20' }],
         joinTable: 'enrollment',
         joinCondition: { left: 'student.id', right: 'enrollment.student_id' },
-        joinType: 'INNER'
+        joinType: 'INNER',
+        groupByFields: null,
+        hasAggregateWithoutGroupBy: false,
+        orderByFields:null
     })
 });
 

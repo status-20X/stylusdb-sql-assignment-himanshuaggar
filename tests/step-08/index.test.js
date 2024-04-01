@@ -1,4 +1,4 @@
-const readCSV = require('../../src/csvReader.js');
+const readCSV = require('../../src/csvReader');
 const {parseQuery} = require('../../src/queryParser');
 const executeSELECTQuery = require('../../src/index');
 
@@ -17,12 +17,14 @@ test('Parse SQL Query', () => {
         fields: ['id', 'name'],
         table: 'student',
         whereClauses: [],
-        joinCondition: null,
+        joinType:null,
         joinTable: null,
-        joinType: null
+        joinCondition: null,
+        groupByFields: null,
+        hasAggregateWithoutGroupBy: false,
+        orderByFields:null
     });
 });
-
 
 test('Execute SQL Query', async () => {
     const query = 'SELECT id, name FROM student';
@@ -47,7 +49,10 @@ test('Parse SQL Query with WHERE Clause', () => {
         }],
         joinCondition: null,
         joinTable: null,
-        joinType: null
+        joinType:null,
+        groupByFields: null,
+        hasAggregateWithoutGroupBy: false,
+        orderByFields:null
     });
 });
 
@@ -77,7 +82,10 @@ test('Parse SQL Query with Multiple WHERE Clauses', () => {
         }],
         joinCondition: null,
         joinTable: null,
-        joinType: null
+        joinType:null,
+        groupByFields: null,
+        hasAggregateWithoutGroupBy: false,
+        orderByFields:null
     });
 });
 
@@ -111,7 +119,10 @@ test('Parse SQL Query with INNER JOIN', async () => {
         whereClauses: [],
         joinTable: 'enrollment',
         joinCondition: { left: 'student.id', right: 'enrollment.student_id' },
-        joinType: null
+        joinType: 'INNER',
+        groupByFields: null,
+        hasAggregateWithoutGroupBy: false,
+        orderByFields:null
     })
 });
 
@@ -124,22 +135,24 @@ test('Parse SQL Query with INNER JOIN and WHERE Clause', async () => {
         whereClauses: [{ field: 'student.age', operator: '>', value: '20' }],
         joinTable: 'enrollment',
         joinCondition: { left: 'student.id', right: 'enrollment.student_id' },
-        //joinType: 'INNER'
-        joinType: null
+        joinType: 'INNER',
+        groupByFields: null,
+        hasAggregateWithoutGroupBy: false,
+        orderByFields:null
     })
 });
 
 test('Execute SQL Query with INNER JOIN', async () => {
     const query = 'SELECT student.name, enrollment.course FROM student INNER JOIN enrollment ON student.id=enrollment.student_id';
-    let result = await executeSELECTQuery(query);
-    
+    const result = await executeSELECTQuery(query);
+    /*
     result = [
       { 'student.name': 'John', 'enrollment.course': 'Mathematics' },
       { 'student.name': 'John', 'enrollment.course': 'Physics' },
       { 'student.name': 'Jane', 'enrollment.course': 'Chemistry' },
       { 'student.name': 'Bob', 'enrollment.course': 'Mathematics' }
     ]
-    
+    */
     expect(result.length).toEqual(4);
     // toHaveProperty is not working here due to dot in the property name
     expect(result[0]).toEqual(expect.objectContaining({
@@ -150,8 +163,8 @@ test('Execute SQL Query with INNER JOIN', async () => {
 
 test('Execute SQL Query with INNER JOIN and a WHERE Clause', async () => {
     const query = 'SELECT student.name, enrollment.course, student.age FROM student INNER JOIN enrollment ON student.id = enrollment.student_id WHERE student.age > 25';
-    let result = await executeSELECTQuery(query);
-   
+    const result = await executeSELECTQuery(query);
+    /*
     result =  [
       {
         'student.name': 'John',
@@ -164,7 +177,7 @@ test('Execute SQL Query with INNER JOIN and a WHERE Clause', async () => {
         'student.age': '30'
       }
     ]
-    
+    */
     expect(result.length).toEqual(2);
     // toHaveProperty is not working here due to dot in the property name
     expect(result[0]).toEqual(expect.objectContaining({

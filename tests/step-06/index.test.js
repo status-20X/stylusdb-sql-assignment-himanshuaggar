@@ -11,15 +11,18 @@ test('Read CSV File', async () => {
 });
 
 test('Parse SQL Query', () => {
-    const query = 'SELECT id, name FROM student';
+    const query = 'SELECT id, name FROM sample';
     const parsed = parseQuery(query);
     expect(parsed).toEqual({
         fields: ['id', 'name'],
-        table: 'student',
+        table: 'sample',
         whereClauses: [],
-        joinCondition: null,
-        joinTable: null,
-        joinType: null
+        joinTable:null,
+        joinCondition:null,
+        joinType:null,
+        groupByFields: null,
+        hasAggregateWithoutGroupBy: false,
+        orderByFields:null
     });
 });
 
@@ -40,23 +43,26 @@ test('Parse SQL Query with WHERE Clause', () => {
         fields: ['id', 'name'],
         table: 'student',
         whereClauses: [{
-            "field": "age",
-            "operator": "=",
-            "value": "25",
+          field: "age",
+          operator: "=",
+          value: "25",
         }],
-        joinCondition: null,
-        joinTable: null,
-        joinType: null
+        joinTable:null,
+        joinType:null,
+        joinCondition:null,
+        groupByFields: null,
+        hasAggregateWithoutGroupBy: false,
+        orderByFields:null
     });
 });
 
 test('Execute SQL Query with WHERE Clause', async () => {
     const query = 'SELECT id, name FROM student WHERE age = 25';
     const result = await executeSELECTQuery(query);
-    expect(result.length).toBe(1); // Update to reflect the correct number of expected results
+    expect(result.length).toBe(1);
     expect(result[0]).toHaveProperty('id');
     expect(result[0]).toHaveProperty('name');
-    expect(result[0].id).toBe('2'); // Update to reflect the correct expected result
+    expect(result[0].id).toBe('2');
 });
 
 test('Parse SQL Query with Multiple WHERE Clauses', () => {
@@ -74,9 +80,12 @@ test('Parse SQL Query with Multiple WHERE Clauses', () => {
             "operator": "=",
             "value": "John",
         }],
-        joinCondition: null,
-        joinTable: null,
-        joinType: null
+        joinTable:null,
+        joinCondition:null,
+        joinType:null,
+        groupByFields: null,
+        hasAggregateWithoutGroupBy: false,
+        orderByFields:null
     });
 });
 

@@ -11,15 +11,18 @@ test('Read CSV File', async () => {
 });
 
 test('Parse SQL Query', () => {
-    const query = 'SELECT id, name FROM student';
+    const query = 'SELECT id, name FROM sample';
     const parsed = parseQuery(query);
     expect(parsed).toEqual({
         fields: ['id', 'name'],
-        table: 'student',
+        table: 'sample',
         whereClauses: [],
-        joinCondition: null,
-        joinTable: null,
-        joinType: null
+        joinType:null,
+        joinTable:null,
+        joinCondition:null,
+        groupByFields: null,
+        hasAggregateWithoutGroupBy: false,
+        orderByFields:null
     });
 });
 
@@ -40,13 +43,16 @@ test('Parse SQL Query with WHERE Clause', () => {
         fields: ['id', 'name'],
         table: 'student',
         whereClauses: [{
-            "field": "age",
-            "operator": "=",
-            "value": "25",
+          field: "age",
+          operator: "=",
+          value: "25",
         }],
         joinCondition: null,
-        joinTable: null,
-        joinType: null
+       joinTable: null,
+       joinType:null,
+       groupByFields: null,
+       hasAggregateWithoutGroupBy: false,
+       orderByFields:null
     });
 });
 
@@ -75,12 +81,15 @@ test('Parse SQL Query with Multiple WHERE Clauses', () => {
             "value": "John",
         }],
         joinCondition: null,
-        joinTable: null,
-        joinType: null
+       joinTable: null,
+       joinType:null,
+       groupByFields: null,
+       hasAggregateWithoutGroupBy: false,
+       orderByFields:null
     });
 });
 
-test('Execute SQL Query with Complex WHERE Clause', async () => {
+test('Execute SQL Query with Multiple WHERE Clause', async () => {
     const query = 'SELECT id, name FROM student WHERE age = 30 AND name = John';
     const result = await executeSELECTQuery(query);
     expect(result.length).toBe(1);
