@@ -22,6 +22,7 @@ test('Parse SQL Query', () => {
         joinType:null,
         groupByFields: null,
         limit:null,
+        "isDistinct": false,
         hasAggregateWithoutGroupBy: false,
         orderByFields:null
     });
