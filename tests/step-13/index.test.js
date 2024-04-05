@@ -1,6 +1,6 @@
-const readCSV = require('../../src/csvReader');
+const { readCSV } = require('../../src/csvReader');
 const {parseQuery, parseJoinClause} = require('../../src/queryParser');
-const executeSELECTQuery = require('../../src/index');
+const { executeSELECTQuery } = require('../../src/index');
 
 test('Read CSV File', async () => {
     const data = await readCSV('./student.csv');
@@ -262,6 +262,7 @@ test('Parse SQL Query', () => {
     expect(parsed).toEqual({
         fields: ['id', 'name'],
         table: 'student',
+        "isDistinct": false,
         whereClauses: [],
         joinCondition: null,
         joinTable: null,
@@ -279,6 +280,7 @@ test('Parse SQL Query with WHERE Clause', () => {
     expect(parsed).toEqual({
         fields: ['id', 'name'],
         table: 'student',
+        "isDistinct": false,
         whereClauses: [{
             "field": "age",
             "operator": "=",
@@ -300,6 +302,7 @@ test('Parse SQL Query with Multiple WHERE Clauses', () => {
     expect(parsed).toEqual({
         fields: ['id', 'name'],
         table: 'student',
+        "isDistinct": false,
         whereClauses: [{
             "field": "age",
             "operator": "=",
@@ -326,6 +329,7 @@ test('Parse SQL Query with INNER JOIN', async () => {
         fields: ['student.name', 'enrollment.course'],
         table: 'student',
         whereClauses: [],
+        "isDistinct": false,
         joinTable: 'enrollment',
         joinType: "INNER",
         joinCondition: { left: 'student.id', right: 'enrollment.student_id' },
@@ -342,6 +346,7 @@ test('Parse SQL Query with INNER JOIN and WHERE Clause', async () => {
     expect(result).toEqual({
         fields: ['student.name', 'enrollment.course'],
         table: 'student',
+        "isDistinct": false,
         whereClauses: [{ field: 'student.age', operator: '>', value: '20' }],
         joinTable: 'enrollment',
         joinType: "INNER",
@@ -401,6 +406,7 @@ test('Parse LEFT Join Query Completely', () => {
     expect(result).toEqual({
         fields: ['student.name', 'enrollment.course'],
         table: 'student',
+        "isDistinct": false,
         whereClauses: [],
         joinType: 'LEFT',
         joinTable: 'enrollment',
@@ -418,6 +424,7 @@ test('Parse LEFT Join Query Completely', () => {
     expect(result).toEqual({
         fields: ['student.name', 'enrollment.course'],
         table: 'student',
+        "isDistinct": false,
         whereClauses: [],
         joinType: 'RIGHT',
         joinTable: 'enrollment',
@@ -438,6 +445,7 @@ test('Parse SQL Query with LEFT JOIN with a WHERE clause filtering the main tabl
         "joinTable": "enrollment",
         "joinType": "LEFT",
         "table": "student",
+        "isDistinct": false,
         "whereClauses": [{ "field": "student.age", "operator": ">", "value": "22" }],
         groupByFields: null,
         hasAggregateWithoutGroupBy: false,
@@ -455,6 +463,7 @@ test('Parse SQL Query with LEFT JOIN with a WHERE clause filtering the join tabl
         "joinTable": "enrollment",
         "joinType": "LEFT",
         "table": "student",
+        "isDistinct": false,
         "whereClauses": [{ "field": "enrollment.course", "operator": "=", "value": "'Physics'" }],
         groupByFields: null,
         hasAggregateWithoutGroupBy: false,
@@ -472,6 +481,7 @@ test('Parse SQL Query with RIGHT JOIN with a WHERE clause filtering the main tab
         "joinTable": "enrollment",
         "joinType": "RIGHT",
         "table": "student",
+        "isDistinct": false,
         "whereClauses": [{ "field": "student.age", "operator": "<", "value": "25" }],
         groupByFields: null,
         hasAggregateWithoutGroupBy: false,
@@ -489,6 +499,7 @@ test('Parse SQL Query with RIGHT JOIN with a WHERE clause filtering the join tab
         "joinTable": "enrollment",
         "joinType": "RIGHT",
         "table": "student",
+        "isDistinct": false,
         "whereClauses": [{ "field": "enrollment.course", "operator": "=", "value": "'Chemistry'" }],
         groupByFields: null,
         hasAggregateWithoutGroupBy: false,
@@ -504,6 +515,7 @@ test('Parse COUNT Aggregate Query', () => {
     expect(parsed).toEqual({
         fields: ['COUNT(*)'],
         table: 'student',
+        "isDistinct": false,
         whereClauses: [],
         groupByFields: null,
         hasAggregateWithoutGroupBy: true,
@@ -522,6 +534,7 @@ test('Parse SUM Aggregate Query', () => {
     expect(parsed).toEqual({
         fields: ['SUM(age)'],
         table: 'student',
+        "isDistinct": false,
         whereClauses: [],
         groupByFields: null,
         hasAggregateWithoutGroupBy: true,
@@ -539,6 +552,7 @@ test('Parse AVG Aggregate Query', () => {
     expect(parsed).toEqual({
         fields: ['AVG(age)'],
         table: 'student',
+        "isDistinct": false,
         whereClauses: [],
         groupByFields: null,
         hasAggregateWithoutGroupBy: true,
@@ -556,6 +570,7 @@ test('Parse MIN Aggregate Query', () => {
     expect(parsed).toEqual({
         fields: ['MIN(age)'],
         table: 'student',
+        "isDistinct": false,
         whereClauses: [],
         groupByFields: null,
         hasAggregateWithoutGroupBy: true,
@@ -574,6 +589,7 @@ test('Parse MAX Aggregate Query', () => {
         fields: ['MAX(age)'],
         table: 'student',
         whereClauses: [],
+        "isDistinct": false,
         groupByFields: null,
         hasAggregateWithoutGroupBy: true,
         "joinCondition": null,
@@ -590,6 +606,7 @@ test('Parse basic GROUP BY query', () => {
     expect(parsed).toEqual({
         fields: ['age', 'COUNT(*)'],
         table: 'student',
+        "isDistinct": false,
         whereClauses: [],
         groupByFields: ['age'],
         joinType: null,
@@ -607,6 +624,7 @@ test('Parse GROUP BY query with WHERE clause', () => {
     expect(parsed).toEqual({
         fields: ['age', 'COUNT(*)'],
         table: 'student',
+        "isDistinct": false,
         whereClauses: [{ field: 'age', operator: '>', value: '22' }],
         groupByFields: ['age'],
         joinType: null,
@@ -624,6 +642,7 @@ test('Parse GROUP BY query with multiple fields', () => {
     expect(parsed).toEqual({
         fields: ['student_id', 'course', 'COUNT(*)'],
         table: 'enrollment',
+        "isDistinct": false,
         whereClauses: [],
         groupByFields: ['student_id', 'course'],
         joinType: null,
@@ -641,6 +660,7 @@ test('Parse GROUP BY query with JOIN and WHERE clauses', () => {
     expect(parsed).toEqual({
         fields: ['student.name', 'COUNT(*)'],
         table: 'student',
+        "isDistinct": false,
         whereClauses: [{ field: 'enrollment.course', operator: '=', value: '"Mathematics"' }],
         groupByFields: ['student.name'],
         joinType: 'INNER',
